@@ -14,10 +14,9 @@ module.exports = {
     } else {
       member = interaction.guild.members.cache.get(user.id);
     }
-    let roles = '';
-    for (const role of member.roles.cache) {
-      roles += role[1].toString();
-    }
+    const roles = member.roles.cache.reduce((str, role) => {
+      return str + role.toString();
+    }, '');
     await interaction.reply(`${userMention(user.id)} was created ${time(user.createdAt, 'R')} and joined this server ${time(member.joinedAt, 'R')}\nroles: ${roles}`);
   },
 };
