@@ -4,7 +4,23 @@ const path = require('node:path');
 
 // Require the necessary discord.js classes
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers, /* GatewayIntentBits.GuildPresences,  */GatewayIntentBits.MessageContent] });
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers, /* GatewayIntentBits.GuildPresences,  */ GatewayIntentBits.MessageContent],
+});
+
+// dynamically retrieve event files
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
+
+for (const file of eventFiles) {
+  const filePath = path.join(eventsPath, file);
+  const event = require(filePath);
+  if (event.once) {
+    client.once(event.name, (...args) => event.execute(...args));
+  } else {
+    client.on(event.name, (...args) => event.execute(...args));
+  }
+}
 
 // dynamically retrieve command files
 client.commands = new Collection();
@@ -17,33 +33,43 @@ for (const file of commandFiles) {
   client.commands.set(command.data.name, command);
 }
 
-const eventsPath = path.join(__dirname, 'events');
-const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
+// dynamically retrieve button files
+client.buttons = new Collection();
+const buttonsPath = path.join(__dirname, 'buttons');
+const buttonFiles = fs.readdirSync(buttonsPath).filter((file) => file.endsWith('.js'));
 
-// dynamically retrieve event files
-for (const file of eventFiles) {
-  const filePath = path.join(eventsPath, file);
-  const event = require(filePath);
-  if (event.once) {
-    client.once(event.name, (...args) => event.execute(...args));
-  } else {
-    client.on(event.name, (...args) => event.execute(...args));
-  }
+for (const file of buttonFiles) {
+  const filePath = path.join(buttonsPath, file);
+  const button = require(filePath);
+  client.buttons.set(button.name, button);
 }
 
-// Dynamically executing commands
 client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
+  if (interaction.isChatInputCommand()) {
+    // Dynamically executing commands
+    const command = client.commands.get(interaction.commandName);
 
-  const command = client.commands.get(interaction.commandName);
+    if (!command) return;
 
-  if (!command) return;
+    try {
+      await command.execute(interaction);
+    } catch (error) {
+      console.error(error);
+      await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+    }
+  } else if (interaction.isButton()) {
+    // Dynamically executing buttons
+    const ids = interaction.customId.split('-');
+    const button = client.buttons.get(ids[0]);
 
-  try {
-    await command.execute(interaction);
-  } catch (error) {
-    console.error(error);
-    await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+    if (!button) return;
+
+    try {
+      await button.execute(interaction, ids);
+    } catch (error) {
+      console.error(error);
+      await interaction.reply({ content: 'There was an error while handling this button press!', ephemeral: true });
+    }
   }
 });
 
