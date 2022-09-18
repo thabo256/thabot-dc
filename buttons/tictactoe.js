@@ -29,7 +29,30 @@ module.exports = {
       ];
 
       // send invite message
-      await interaction.update({ content: `${userMention(user.id)}\`X\` **vs** ${userMention(interaction.user.id)}\`O\`\n\nanyone click to start`, components });
+      return interaction.update({ content: `${userMention(user.id)}\`X\` **vs** ${userMention(interaction.user.id)}\`O\`\n\nanyone click to start`, components });
+    } else if (ids[1] === 'rematch') {
+      // not a player
+      if (!interaction.message.mentions.users.has(interaction.user.id)) {
+        return interaction.reply({ content: 'you are not in the game\nuse `/tictactoe` to start a new game', ephemeral: true });
+      }
+      const content = interaction.message.content;
+      const components = interaction.message.components;
+      const button = components[3].components[0];
+      // get players
+      const regex = /<@!?(\d+?)>`.+?`/g;
+      const players = [regex.exec(content), regex.exec(content)];
+      if (players[0][1] !== interaction.user.id) {
+        players.reverse();
+      }
+      button.data.label = 'accept rematch';
+      button.data.custom_id = `tictactoe-accept-${players[1][1]}`;
+      return interaction.update({ content, components });
+    } else if (ids[1] === 'accept') {
+      if (ids[2] !== interaction.user.id) return interaction.deferUpdate();
+      const components = interaction.message.components;
+      components.pop();
+      await interaction.update({ components })
+      return interaction.followUp('this is definetly a new Game and not just a message\nyou need to be really good to be able to play it');
     } else {
       // not a player
       if (!interaction.message.mentions.users.has(interaction.user.id)) {
