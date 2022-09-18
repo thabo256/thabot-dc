@@ -11,7 +11,7 @@ module.exports = {
     if (user) {
       return interaction.reply(`${user.username}: ${inlineCode(user.id)}`);
     } else {
-      return interaction.reply(`Your ID: ${inlineCode(interaction.user.id)}`);
+      return interaction.reply(`${interaction.user.username}: ${inlineCode(interaction.user.id)}`);
     }
   },
 };
