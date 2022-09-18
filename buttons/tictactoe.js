@@ -48,8 +48,8 @@ module.exports = {
       }
 
       // check valid turn else return
-      let components = interaction.message.components;
-      let button = components[ids[1]].components[ids[2]];
+      const components = interaction.message.components;
+      const button = components[ids[1]].components[ids[2]];
       if (button.data.label !== ' ') return interaction.deferUpdate();
       // update board
       button.data.label = players[0][2];
@@ -64,7 +64,9 @@ module.exports = {
       }
       if (win || checkDraw()) {
         disableAll();
-        return interaction.update({ content: line1 + line2, components});
+        // add rematch button
+        components.push(new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('tictactoe-rematch').setLabel('rematch').setStyle(ButtonStyle.Danger)));
+        return interaction.update({ content: line1 + line2, components });
       }
 
       // next player's turn
@@ -72,14 +74,14 @@ module.exports = {
 
       // helper functions
       function checkDraw() {
-      for (const row of components) {
-        for (const btn of row.components) {
-          if (btn.label === ' ') {
-            return false;
+        for (const row of components) {
+          for (const btn of row.components) {
+            if (btn.label === ' ') {
+              return false;
+            }
           }
         }
-      }
-      return true;
+        return true;
       }
       function checkWin() {
         if (equals3(ids[1], 0, ids[1], 1, ids[1], 2)) {
