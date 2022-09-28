@@ -11,3 +11,16 @@
   - [ ] add button to get member role
 - [ ] add Lokalisations
 - [ ] ...
+
+---
+
+## TOBI
+
+- vorbereitung
+  - [ ] button und command handler anschauen
+  - [ ] spell verbessern
+    - [ ] check ob schreibbar
+    - [ ] duplicate AB
+    - [ ] maybe max char limit
+  - [ ] heroku offline nehmen
+- [ ] copy spell
