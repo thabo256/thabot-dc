@@ -2,7 +2,6 @@ const { SlashCommandBuilder, userMention, ActionRowBuilder, ButtonBuilder, Butto
 
 module.exports = {
   data: new SlashCommandBuilder().setName('tictactoe').setDescription('Play Tic Tac Toe'),
-  test: true,
   async execute(interaction) {
     const components = [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('tictactoe-join').setLabel('join').setStyle(ButtonStyle.Success))];
 

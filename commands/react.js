@@ -47,7 +47,6 @@ module.exports = {
     .setName('react')
     .setDescription('react to latest message')
     .addStringOption((option) => option.setName('text').setDescription('text to react (max. 20 characters)').setRequired(true)),
-  test: true,
   async execute(interaction) {
     const text = interaction.options.getString('text');
     if (text.length > 20) return interaction.reply({ content: 'your text is too long', ephemeral: true });
