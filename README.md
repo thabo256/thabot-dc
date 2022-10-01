@@ -11,9 +11,3 @@
   - [ ] add button to get member role
 - [ ] add Lokalisations
 - [ ] ...
-
----
-
-## TOBI
-
-- [ ] copy spell
