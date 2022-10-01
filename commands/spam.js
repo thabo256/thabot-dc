@@ -6,6 +6,7 @@ module.exports = {
     .setDescription('Spam this chanel')
     .addNumberOption((option) => option.setName('count').setDescription('how many times').setRequired(true))
     .addStringOption((option) => option.setName('text').setDescription('what to spam').setRequired(true)),
+  test: true,
   async execute(interaction) {
     const count = interaction.options.getNumber('count');
     const text = interaction.options.getString('text');

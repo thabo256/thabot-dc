@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, time, userMention } = require('discord.js');
+const { SlashCommandBuilder, time } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -17,6 +17,6 @@ module.exports = {
     const roles = member.roles.cache.reduce((str, role) => {
       return str + role.toString();
     }, '');
-    await interaction.reply(`${userMention(user.id)} was created ${time(user.createdAt, 'R')} and joined this server ${time(member.joinedAt, 'R')}\nroles: ${roles}`);
+    await interaction.reply(`\`${user.tag}\` was created ${time(user.createdAt, 'R')} and joined this server ${time(member.joinedAt, 'R')}\nroles: ${roles}`);
   },
 };
