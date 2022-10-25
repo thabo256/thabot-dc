@@ -7,7 +7,7 @@
   - [x] create new game
   - [ ] create board
   - [ ] handle who has to start
-- [ ] send welcome message in welcome channel
+- [ ] send welcome message in welcome channel?
   - [ ] add button to get member role
 - [ ] add Lokalisations
 - [ ] ...
