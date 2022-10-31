@@ -46,10 +46,9 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('react')
     .setDescription('react to latest message')
-    .addStringOption((option) => option.setName('text').setDescription('text to react (max. 20 characters)').setRequired(true)),
+    .addStringOption((option) => option.setName('text').setDescription('text to react').setRequired(true).setMaxLength(20)),
   async execute(interaction) {
     const text = interaction.options.getString('text');
-    if (text.length > 20) return interaction.reply({ content: 'your text is too long', ephemeral: true });
     if (/(.).*\1/.test(text)) return interaction.reply({ content: `${text} has repeated characters`, ephemeral: true });
     const message = interaction.channel.lastMessage;
     if (message === null) return interaction.reply({ content: "can't find last message", ephemeral: true });

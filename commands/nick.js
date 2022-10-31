@@ -4,7 +4,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('nick')
     .setDescription('nick other members')
-    .addStringOption((option) => option.setName('name').setDescription('new nickname)').setRequired(true))
+    .addStringOption((option) => option.setName('name').setDescription('new nickname').setRequired(true).setMaxLength(32))
     .addUserOption((option) => option.setName('user').setDescription('user to nick')),
   test: true,
   async execute(interaction) {
