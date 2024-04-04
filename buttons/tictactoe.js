@@ -10,26 +10,28 @@ module.exports = {
       }
 
       // build board
-      const components = [
+      const board = [
         new ActionRowBuilder().addComponents(
-          new ButtonBuilder().setCustomId('tictactoe-0-0').setLabel(' ').setStyle(ButtonStyle.Secondary),
-          new ButtonBuilder().setCustomId('tictactoe-0-1').setLabel(' ').setStyle(ButtonStyle.Secondary),
-          new ButtonBuilder().setCustomId('tictactoe-0-2').setLabel(' ').setStyle(ButtonStyle.Secondary)
+          new ButtonBuilder().setCustomId('tictactoe-0-0').setLabel('-').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('tictactoe-0-1').setLabel('-').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('tictactoe-0-2').setLabel('-').setStyle(ButtonStyle.Secondary)
         ),
         new ActionRowBuilder().addComponents(
-          new ButtonBuilder().setCustomId('tictactoe-1-0').setLabel(' ').setStyle(ButtonStyle.Secondary),
-          new ButtonBuilder().setCustomId('tictactoe-1-1').setLabel(' ').setStyle(ButtonStyle.Secondary),
-          new ButtonBuilder().setCustomId('tictactoe-1-2').setLabel(' ').setStyle(ButtonStyle.Secondary)
+          new ButtonBuilder().setCustomId('tictactoe-1-0').setLabel('-').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('tictactoe-1-1').setLabel('-').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('tictactoe-1-2').setLabel('-').setStyle(ButtonStyle.Secondary)
         ),
         new ActionRowBuilder().addComponents(
-          new ButtonBuilder().setCustomId('tictactoe-2-0').setLabel(' ').setStyle(ButtonStyle.Secondary),
-          new ButtonBuilder().setCustomId('tictactoe-2-1').setLabel(' ').setStyle(ButtonStyle.Secondary),
-          new ButtonBuilder().setCustomId('tictactoe-2-2').setLabel(' ').setStyle(ButtonStyle.Secondary)
+          new ButtonBuilder().setCustomId('tictactoe-2-0').setLabel('-').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('tictactoe-2-1').setLabel('-').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('tictactoe-2-2').setLabel('-').setStyle(ButtonStyle.Secondary)
         ),
       ];
 
-      // send invite message
-      return interaction.update({ content: `${userMention(user.id)}\`X\` **vs** ${userMention(interaction.user.id)}\`O\`\n\nanyone click to start`, components });
+      // send bord
+      return interaction.update({ content: `${userMention(user.id)}\`X\` **vs** ${userMention(interaction.user.id)}\`O\`\n\nanyone click to start`, components: board });
+
+      
     } else if (ids[1] === 'rematch') {
       // not a player
       if (!interaction.message.mentions.users.has(interaction.user.id)) {
@@ -46,13 +48,53 @@ module.exports = {
       }
       button.data.label = 'accept rematch';
       button.data.custom_id = `tictactoe-accept-${players[1][1]}`;
+
+      // send rematch request
       return interaction.update({ content, components });
+
+
     } else if (ids[1] === 'accept') {
       if (ids[2] !== interaction.user.id) return interaction.deferUpdate();
+      const content = interaction.message.content;
       const components = interaction.message.components;
       components.pop();
-      await interaction.update({ components })
-      return interaction.followUp('this is definetly a new Game and not just a message\nyou need to be really good to be able to play it');
+      await interaction.update({ components });
+      
+      // get players
+      const regex = /<@!?(\d+?)>`(.+?)`/g;
+      const players = [regex.exec(content), regex.exec(content)];
+
+      // choose starting player
+      let line2 = `${userMention(players[0][1])}'s turn`;
+      if (/draw/.test(content)) {
+        line2 = 'anyone click to start';
+      } else if (players[0][1] === content.match(/<@!?(\d+?)> won/)[1]) {
+        line2 = `${userMention(players[1][1])}'s turn`;
+      }
+
+      // build board
+      const board = [
+        new ActionRowBuilder().addComponents(
+          new ButtonBuilder().setCustomId('tictactoe-0-0').setLabel('-').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('tictactoe-0-1').setLabel('-').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('tictactoe-0-2').setLabel('-').setStyle(ButtonStyle.Secondary)
+        ),
+        new ActionRowBuilder().addComponents(
+          new ButtonBuilder().setCustomId('tictactoe-1-0').setLabel('-').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('tictactoe-1-1').setLabel('-').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('tictactoe-1-2').setLabel('-').setStyle(ButtonStyle.Secondary)
+        ),
+        new ActionRowBuilder().addComponents(
+          new ButtonBuilder().setCustomId('tictactoe-2-0').setLabel('-').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('tictactoe-2-1').setLabel('-').setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('tictactoe-2-2').setLabel('-').setStyle(ButtonStyle.Secondary)
+        ),
+      ];
+      
+      // send new bord
+      return interaction.followUp({ content: `${userMention(players[0][1])}\`${players[0][2]}\` **vs** ${userMention(players[1][1])}\`${players[1][2]}\`\n\n${line2}`, components: board });
+
+
     } else {
       // not a player
       if (!interaction.message.mentions.users.has(interaction.user.id)) {
@@ -73,7 +115,7 @@ module.exports = {
       // check valid turn else return
       const components = interaction.message.components;
       const button = components[ids[1]].components[ids[2]];
-      if (button.data.label !== ' ') return interaction.deferUpdate();
+      if (button.data.label !== '-') return interaction.deferUpdate();
       // update board
       button.data.label = players[0][2];
 
@@ -99,7 +141,7 @@ module.exports = {
       function checkDraw() {
         for (const row of components) {
           for (const btn of row.components) {
-            if (btn.label === ' ') {
+            if (btn.label === '-') {
               return false;
             }
           }
@@ -141,7 +183,7 @@ module.exports = {
         return (
           components[y0].components[x0].data.label === components[y1].components[x1].data.label &&
           components[y1].components[x1].data.label === components[y2].components[x2].data.label &&
-          components[y0].components[x0].data.label !== ' '
+          components[y0].components[x0].data.label !== '-'
         );
       }
     }

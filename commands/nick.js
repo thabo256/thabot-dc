@@ -11,7 +11,7 @@ module.exports = {
     const name = interaction.options.getString('name');
     const user = interaction.options.getUser('user');
     const member = user ? interaction.guild.members.cache.get(user.id) : interaction.member;
-    await member.setNickname(name)
+    await member.setNickname(name);
     await interaction.reply(`set nickname of \`${member.user.tag}\` to \`${name}\``);
   },
 };
