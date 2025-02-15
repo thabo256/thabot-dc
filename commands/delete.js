@@ -5,7 +5,7 @@ module.exports = {
     .setName('delete')
     .setDescription('deletes last sent messages in channel')
     .addNumberOption((option) => option.setName('count').setDescription('number of messages to delete').setMinValue(1).setMaxValue(100)),
-    test: true,
+  test: true,
   async execute(interaction) {
     const count = interaction.options.getNumber('count') ?? 1;
     if (count === 1) {
