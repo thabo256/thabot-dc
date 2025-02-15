@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -9,9 +9,9 @@ module.exports = {
   async execute(interaction) {
     const count = interaction.options.getNumber('count') ?? 1;
     if (count === 1) {
-      await interaction.reply({ content: `deleting last message`, ephemeral: true });
+      await interaction.reply({ content: `deleting last message`, flags: MessageFlags.Ephemeral });
     } else {
-      await interaction.reply({ content: `deleting last ${count} messages`, ephemeral: true });
+      await interaction.reply({ content: `deleting last ${count} messages`, flags: MessageFlags.Ephemeral });
     }
 
     await interaction.channel.messages

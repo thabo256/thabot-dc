@@ -1,4 +1,4 @@
-const { userMention, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { userMention, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 
 module.exports = {
   name: 'tictactoe',
@@ -6,7 +6,7 @@ module.exports = {
     if (ids[1] === 'join') {
       const user = interaction.message.mentions.users.first();
       if (user.id === interaction.user.id) {
-        return interaction.reply({ content: "you can't play against yourself\ngo and find friends!", ephemeral: true });
+        return interaction.reply({ content: "you can't play against yourself\ngo and find friends!", flags: MessageFlags.Ephemeral });
       }
 
       // build board
@@ -35,7 +35,7 @@ module.exports = {
     } else if (ids[1] === 'rematch') {
       // not a player
       if (!interaction.message.mentions.users.has(interaction.user.id)) {
-        return interaction.reply({ content: 'you are not in the game\nuse `/tictactoe` to start a new game', ephemeral: true });
+        return interaction.reply({ content: 'you are not in the game\nuse `/tictactoe` to start a new game', flags: MessageFlags.Ephemeral });
       }
       const content = interaction.message.content;
       const components = interaction.message.components;
@@ -98,7 +98,7 @@ module.exports = {
     } else {
       // not a player
       if (!interaction.message.mentions.users.has(interaction.user.id)) {
-        return interaction.reply({ content: 'you are not in the game\nuse `/tictactoe` to start a new game', ephemeral: true });
+        return interaction.reply({ content: 'you are not in the game\nuse `/tictactoe` to start a new game', flags: MessageFlags.Ephemeral });
       }
       const message = interaction.message.content;
       if (!message.includes('anyone click to start')) {

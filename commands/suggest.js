@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 require('dotenv').config();
 
 module.exports = {
@@ -18,6 +18,6 @@ module.exports = {
       .setThumbnail(interaction.guild.iconURL())
       .setTimestamp();
     await interaction.client.users.cache.find((user) => user.id === process.env.DEVELOPER_ID).send({ embeds: [embed] });
-    await interaction.reply({ content: `your suggestion will be processed shortly`, ephemeral: true });
+    await interaction.reply({ content: `your suggestion will be processed shortly`, flags: MessageFlags.Ephemeral });
   },
 };

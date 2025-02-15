@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 const emojis = {
   a: '🇦',
@@ -50,8 +50,8 @@ module.exports = {
     .addStringOption((option) => option.setName('text').setDescription('text to spell').setRequired(true).setMaxLength(20)),
   async execute(interaction) {
     const text = interaction.options.getString('text');
-    if (/(.).*\1/.test(text)) return interaction.reply({ content: `${text} has repeated characters`, ephemeral: true });
-    await interaction.reply({ content: `spelling out ${text} with reactions`, ephemeral: true });
+    if (/(.).*\1/.test(text)) return interaction.reply({ content: `${text} has repeated characters`, flags: MessageFlags.Ephemeral });
+    await interaction.reply({ content: `spelling out ${text} with reactions`, flags: MessageFlags.Ephemeral });
     await interaction.channel.send('** **').then(async (message) => {
       for (const char of text.toLowerCase()) {
         const emoji = emojis[char];

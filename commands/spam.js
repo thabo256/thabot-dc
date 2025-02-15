@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -11,7 +11,7 @@ module.exports = {
     const count = interaction.options.getNumber('count');
     const text = interaction.options.getString('text');
 
-    await interaction.reply({ content: `now spamming "${text.substring(0, 100)}" ${count} times`, ephemeral: true });
+    await interaction.reply({ content: `now spamming "${text.substring(0, 100)}" ${count} times`, flags: MessageFlags.Ephemeral });
     for (let i = 0; i < count; i++) {
       await interaction.channel.send(text);
     }

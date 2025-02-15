@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 const emojis = {
   a: '🇦',
@@ -50,10 +50,10 @@ module.exports = {
     .addStringOption((option) => option.setName('text').setDescription('text to react').setRequired(true).setMaxLength(20)),
   async execute(interaction) {
     const text = interaction.options.getString('text');
-    if (/(.).*\1/.test(text)) return interaction.reply({ content: `${text} has repeated characters`, ephemeral: true });
+    if (/(.).*\1/.test(text)) return interaction.reply({ content: `${text} has repeated characters`, flags: MessageFlags.Ephemeral });
     const message = interaction.channel.lastMessage;
-    if (message === null) return interaction.reply({ content: "can't find last message", ephemeral: true });
-    await interaction.reply({ content: `reacting with ${text}`, ephemeral: true });
+    if (message === null) return interaction.reply({ content: "can't find last message", flags: MessageFlags.Ephemeral });
+    await interaction.reply({ content: `reacting with ${text}`, flags: MessageFlags.Ephemeral });
     for (const char of text.toLowerCase()) {
       const emoji = emojis[char];
       if (emoji) {
