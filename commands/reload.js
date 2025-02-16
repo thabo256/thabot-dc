@@ -49,6 +49,9 @@ module.exports = {
       if (type === 'commands') {
         interaction.client.commands.set(newFile.data.name, newFile);
         await interaction.reply({ content: `Command \`${newFile.data.name}\` was reloaded!`, flags: MessageFlags.Ephemeral });
+      } else if (type === 'buttons') {
+        interaction.client.buttons.set(newFile.name, newFile);
+        await interaction.reply({ content: `Button \`${newFile.name}\` was reloaded!`, flags: MessageFlags.Ephemeral });
       }
     } catch (error) {
       console.error(error);
