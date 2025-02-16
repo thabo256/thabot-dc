@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags, InteractionContextType, ApplicationIntegrationType } = require('discord.js');
 
 const emojis = {
   a: '🇦',
@@ -47,7 +47,9 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('spell')
     .setDescription('spell out text using reactions')
-    .addStringOption((option) => option.setName('text').setDescription('text to spell').setRequired(true).setMaxLength(20)),
+    .addStringOption((option) => option.setName('text').setDescription('text to spell').setRequired(true).setMaxLength(20))
+    .setContexts([InteractionContextType.Guild, InteractionContextType.BotDM])
+    .setIntegrationTypes([ApplicationIntegrationType.GuildInstall]),
   async execute(interaction) {
     const text = interaction.options.getString('text');
     if (/(.).*\1/.test(text)) return interaction.reply({ content: `${text} has repeated characters`, flags: MessageFlags.Ephemeral });

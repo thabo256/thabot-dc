@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, inlineCode, ApplicationIntegrationType, InteractionContextType } = require('discord.js');
+const { SlashCommandBuilder, inlineCode, InteractionContextType, ApplicationIntegrationType } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()

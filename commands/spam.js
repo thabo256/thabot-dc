@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, MessageFlags, InteractionContextType } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags, InteractionContextType, ApplicationIntegrationType } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -6,7 +6,8 @@ module.exports = {
     .setDescription('Spam this chanel')
     .addNumberOption((option) => option.setName('count').setDescription('how many times').setRequired(true).setMinValue(1).setMaxValue(100))
     .addStringOption((option) => option.setName('text').setDescription('what to spam').setRequired(true).setMaxLength(2000))
-    .setContexts(InteractionContextType.Guild),
+    .setContexts(InteractionContextType.Guild)
+    .setIntegrationTypes([ApplicationIntegrationType.GuildInstall]),
   test: true,
   async execute(interaction) {
     const count = interaction.options.getNumber('count');
