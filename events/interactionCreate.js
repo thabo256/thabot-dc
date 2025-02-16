@@ -19,6 +19,20 @@ module.exports = {
           await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral }).catch(console.error);
         }
       }
+    } else if (interaction.isAutocomplete()) {
+      // Dynamically executing autocomplete
+      const command = interaction.client.commands.get(interaction.commandName);
+
+      if (!command) {
+        console.error(`Command ${interaction.commandName} not found.`);
+        return;
+      }
+
+      try {
+        await command.autocomplete(interaction);
+      } catch (error) {
+        console.error(error);
+      }
     } else if (interaction.isButton()) {
       // Dynamically executing buttons
       const ids = interaction.customId.split('-');
