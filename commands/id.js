@@ -1,10 +1,12 @@
-const { SlashCommandBuilder, inlineCode } = require('discord.js');
+const { SlashCommandBuilder, inlineCode, ApplicationIntegrationType, InteractionContextType } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('id')
-    .setDescription('Display a user\'s ID')
-    .addUserOption((option) => option.setName('user').setDescription('user to get ID from')),
+    .setDescription("Display a user's ID")
+    .addUserOption((option) => option.setName('user').setDescription('user to get ID from'))
+    .setContexts([InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel])
+    .setIntegrationTypes([ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall]),
   async execute(interaction) {
     const user = interaction.options.getUser('user');
 

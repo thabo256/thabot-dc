@@ -1,10 +1,11 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, InteractionContextType, ApplicationIntegrationType } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('nickbot')
     .setDescription('set nickname of bot')
-    .addStringOption((option) => option.setName('name').setDescription('new nickname for bot)').setRequired(true).setMaxLength(32)),
+    .addStringOption((option) => option.setName('name').setDescription('new nickname for bot)').setRequired(true).setMaxLength(32))
+    .setContexts(InteractionContextType.Guild),
   async execute(interaction) {
     const name = interaction.options.getString('name');
     const me = interaction.guild.members.me;

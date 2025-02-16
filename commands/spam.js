@@ -5,7 +5,8 @@ module.exports = {
     .setName('spam')
     .setDescription('Spam this chanel')
     .addNumberOption((option) => option.setName('count').setDescription('how many times').setRequired(true).setMinValue(1).setMaxValue(100))
-    .addStringOption((option) => option.setName('text').setDescription('what to spam').setRequired(true).setMaxLength(2000)),
+    .addStringOption((option) => option.setName('text').setDescription('what to spam').setRequired(true).setMaxLength(2000))
+    .setContexts(InteractionContextType.Guild),
   test: true,
   async execute(interaction) {
     const count = interaction.options.getNumber('count');
