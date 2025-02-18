@@ -21,12 +21,16 @@ module.exports = {
   async autocomplete(interaction) {
     // check for permission
     if (interaction.user.id !== process.env.DEVELOPER_ID) {
-      return interaction.respond([{ name: '[ERROR] You do not have permission to use this command.', value: 'access_denied' }]);
+      return interaction.respond([{ name: '[ERROR] You do not have permission to use this command.', value: 'error_access_denied' }]);
     }
 
     // get user inputs
     const type = interaction.options.getString('type');
     const focusedValue = interaction.options.getFocused();
+
+    if (!type) {
+      return interaction.respond([{ name: 'please input a type!', value: 'error_no_type_given' }]);
+    }
 
     // get the file names
     const commandsPath = path.join(__dirname, '..', type);
