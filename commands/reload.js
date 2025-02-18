@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 require('dotenv').config();
 
-const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags, InteractionContextType, ApplicationIntegrationType } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -15,8 +15,9 @@ module.exports = {
         { name: 'button', value: 'buttons' }
       )
     )
-    .addStringOption((option) => option.setName('file').setDescription('the file to reload').setRequired(true).setAutocomplete(true)),
-  test: true,
+    .addStringOption((option) => option.setName('file').setDescription('the file to reload').setRequired(true).setAutocomplete(true))
+    .setContexts([InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel])
+    .setIntegrationTypes([ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall]),
   async autocomplete(interaction) {
     // check for permission
     if (interaction.user.id !== process.env.DEVELOPER_ID) {
