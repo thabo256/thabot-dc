@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, InteractionContextType, ApplicationIntegrationType, MessageFlags, GuildScheduledEventManager } = require('discord.js');
+const { SlashCommandBuilder, InteractionContextType, ApplicationIntegrationType, MessageFlags, GuildScheduledEventManager, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -11,8 +11,19 @@ module.exports = {
 
     const events = await eventManager.fetch();
 
-    console.log(events);
-    
+    events.forEach((event) => {
+      console.log(event.name);
+    });
+
+    // const components = [
+    //   new ActionRowBuilder().addComponents(
+    //     new ButtonBuilder().setCustomId('events-0').setLabel('monday').setStyle(ButtonStyle.Secondary),
+    //     new ButtonBuilder().setCustomId('events-1').setLabel('tuesday').setStyle(ButtonStyle.Secondary),
+    //     new ButtonBuilder().setCustomId('events-2').setLabel('wednesday').setStyle(ButtonStyle.Secondary),
+    //     new ButtonBuilder().setCustomId('events-3').setLabel('thursday').setStyle(ButtonStyle.Secondary),
+    //     new ButtonBuilder().setCustomId('events-4').setLabel('friday').setStyle(ButtonStyle.Secondary)
+    //   ),
+    // ];
 
     // const event = await eventManager.create({
     //   name: 'Test Event',
