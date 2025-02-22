@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, InteractionContextType, ApplicationIntegrationType, MessageFlags, GuildScheduledEventManager, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, InteractionContextType, ApplicationIntegrationType, MessageFlags, GuildScheduledEventManager, time, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -11,8 +11,14 @@ module.exports = {
 
     const events = await eventManager.fetch();
 
+    let reply = '';
+
     events.forEach((event) => {
-      console.log(event.name);
+      reply += `# ${event.name}\n`;
+      reply += `${time(new Date(event.scheduledStartTimestamp), 'R')}\n`;
+      reply += `-# ${event.entityMetadata.location}\n`;
+      reply += event.description.replace(/^/gm, '> ');
+      reply += '\n\n';
     });
 
     // const components = [
@@ -34,6 +40,6 @@ module.exports = {
     //   entityMetadata: { location: 'Berlin' },
     // });
 
-    await interaction.reply({ content: `aaa`, flags: MessageFlags.Ephemeral });
+    await interaction.reply(reply || 'No events scheduled');
   },
 };
