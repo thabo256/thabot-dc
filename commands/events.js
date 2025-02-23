@@ -16,7 +16,7 @@ module.exports = {
     events.forEach((event) => {
       reply += `# ${event.name}\n`;
       reply += `${time(new Date(event.scheduledStartTimestamp), 'R')}\n`;
-      reply += `-# ${event.entityMetadata.location}\n`;
+      reply += `-# <:pin:1343011687380553738>${event.entityMetadata.location}\n\n`;
       reply += event.description.replace(/^/gm, '> ');
       reply += '\n\n';
     });
