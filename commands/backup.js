@@ -5,7 +5,20 @@ require('dotenv').config();
 const { SlashCommandBuilder, MessageFlags, InteractionContextType, ApplicationIntegrationType, AttachmentBuilder } = require('discord.js');
 
 const fetchChannel = async (channel) => {
-  return { id: channel.id, name: channel.name, viewable: channel.viewable };
+  if (!channel.viewable) {
+    return { id: channel.id, name: channel.name, viewable: channel.viewable };
+  }
+  const messages = await channel.messages.fetch({ limit: 100 });
+  // messages.forEach((message) => {
+  //   console.log(channel.name, message.createdTimestamp, message.author.username, message.content);
+  // });
+  console.log(messages.size);
+  return {
+    id: channel.id,
+    name: channel.name,
+    viewable: channel.viewable,
+    messages: messages.map((message) => ({ id: message.id, timestamp: message.createdTimestamp, author: message.author.username, content: message.content })),
+  };
 };
 
 module.exports = {
