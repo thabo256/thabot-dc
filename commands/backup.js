@@ -8,7 +8,13 @@ const fetchChannel = async (channel) => {
   if (!channel.viewable) {
     return { id: channel.id, name: channel.name, viewable: channel.viewable };
   }
-  const messages = await channel.messages.fetch({ limit: 100 });
+  let messages = await channel.messages.fetch({ limit: 100 });
+  let lastMessageId = undefined;
+  while (messages.last()?.id !== lastMessageId) {
+    lastMessageId = messages.last()?.id;
+    messages = messages.concat(await channel.messages.fetch({ limit: 100, before: messages.last().id }));
+  }
+
   // messages.forEach((message) => {
   //   console.log(channel.name, message.createdTimestamp, message.author.username, message.content);
   // });
