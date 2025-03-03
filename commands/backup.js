@@ -14,10 +14,6 @@ const fetchChannel = async (channel) => {
     messages = messages.concat(await channel.messages.fetch({ limit: 100, before: messages.last().id }));
   }
 
-  // messages.forEach((message) => {
-  //   console.log(channel.name, message.createdTimestamp, message.author.username, message.content);
-  // });
-  console.log(messages.size);
   return {
     id: channel.id,
     name: channel.name,
@@ -45,6 +41,10 @@ module.exports = {
     const channels = await interaction.guild.channels.fetch();
     const backup = { id: interaction.guild.id, name: interaction.guild.name, channels: [{ textChannels: [], voiceChannels: [] }] };
 
+    const size = channels.filter((channel) => channel.isTextBased()).size;
+    let i = 0;
+    await interaction.editReply(`Creating backup...\n-# ${i}/${size}`);
+
     for (const channel of channels.values()) {
       if (!channel.isTextBased()) continue;
 
@@ -65,6 +65,8 @@ module.exports = {
           backup.channels[channel.parent.position + 1].textChannels[channel.position] = await fetchChannel(channel);
         }
       }
+
+      await interaction.editReply(`Creating backup...\n-# ${++i}/${size}`);
     }
 
     const compressionMethod = interaction.options.getString('compression');
