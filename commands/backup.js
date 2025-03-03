@@ -1,5 +1,4 @@
-const fs = require('node:fs');
-const path = require('node:path');
+const { Uint8ArrayWriter, TextReader, ZipWriter } = require('@zip.js/zip.js');
 require('dotenv').config();
 
 const { SlashCommandBuilder, MessageFlags, InteractionContextType, ApplicationIntegrationType, AttachmentBuilder } = require('discord.js');
@@ -28,7 +27,12 @@ const fetchChannel = async (channel) => {
 };
 
 module.exports = {
-  data: new SlashCommandBuilder().setName('backup').setDescription('backup this server').setContexts([InteractionContextType.Guild]).setIntegrationTypes([ApplicationIntegrationType.GuildInstall]),
+  data: new SlashCommandBuilder()
+    .setName('backup')
+    .setDescription('backup this server')
+    .addStringOption((option) => option.setName('compression').setDescription('compression method').addChoices({ name: 'zip', value: 'zip' }, { name: 'none', value: 'none' }))
+    .setContexts([InteractionContextType.Guild])
+    .setIntegrationTypes([ApplicationIntegrationType.GuildInstall]),
   test: true,
   async execute(interaction) {
     // check for permission
@@ -63,7 +67,19 @@ module.exports = {
       }
     }
 
-    const file = new AttachmentBuilder(Buffer.from(JSON.stringify(backup, null, 2)), { name: 'backup.json' });
+    const compressionMethod = interaction.options.getString('compression');
+
+    if (compressionMethod === 'none') {
+      const file = new AttachmentBuilder(Buffer.from(JSON.stringify(backup, null, 2)), { name: 'backup.json' });
+
+      return interaction.editReply({ content: 'download backup file:', files: [file] });
+    }
+
+    const writer = new ZipWriter(new Uint8ArrayWriter());
+    await writer.add('backup.json', new TextReader(JSON.stringify(backup)), { level: 9 });
+    const zipData = await writer.close();
+
+    const file = new AttachmentBuilder(Buffer.from(zipData), { name: 'backup.zip' });
 
     return interaction.editReply({ content: 'download backup file:', files: [file] });
   },
