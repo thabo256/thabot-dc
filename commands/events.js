@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, InteractionContextType, ApplicationIntegrationType, MessageFlags, GuildScheduledEventManager, time, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, InteractionContextType, ApplicationIntegrationType, GuildScheduledEventManager, time, EmbedBuilder } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -11,35 +11,24 @@ module.exports = {
 
     const events = await eventManager.fetch();
 
+    if (events.length == 0) {
+      return interaction.reply('No events scheduled');
+    }
+
     let reply = '';
+    let embeds = [];
 
     events.forEach((event) => {
-      reply += `# ${event.name}\n`;
-      reply += `${time(new Date(event.scheduledStartTimestamp), 'R')}\n`;
-      reply += `-# <:pin:1343011687380553738>${event.entityMetadata.location}\n\n`;
-      reply += event.description.replace(/^/gm, '> ');
-      reply += '\n\n';
+      embeds.push(
+        new EmbedBuilder()
+          .setColor(0x00ff00)
+          .setTitle(event.name)
+          .setURL(event.url)
+          .setDescription(`${event.description}\n\n-# <:pin:1343011687380553738>${event.entityMetadata.location}\n${time(new Date(event.scheduledStartTimestamp), 'R')}`)
+          .setTimestamp(event.scheduledStartTimestamp)
+      );
     });
 
-    // const components = [
-    //   new ActionRowBuilder().addComponents(
-    //     new ButtonBuilder().setCustomId('events-0').setLabel('monday').setStyle(ButtonStyle.Secondary),
-    //     new ButtonBuilder().setCustomId('events-1').setLabel('tuesday').setStyle(ButtonStyle.Secondary),
-    //     new ButtonBuilder().setCustomId('events-2').setLabel('wednesday').setStyle(ButtonStyle.Secondary),
-    //     new ButtonBuilder().setCustomId('events-3').setLabel('thursday').setStyle(ButtonStyle.Secondary),
-    //     new ButtonBuilder().setCustomId('events-4').setLabel('friday').setStyle(ButtonStyle.Secondary)
-    //   ),
-    // ];
-
-    // const event = await eventManager.create({
-    //   name: 'Test Event',
-    //   scheduledStartTime: new Date(Date.now() + 1000 * 60 * 60),
-    //   scheduledEndTime: new Date(Date.now() + 1000 * 60 * 60 * 2),
-    //   privacyLevel: 2, // Guild only
-    //   entityType: 3, // External
-    //   entityMetadata: { location: 'Berlin' },
-    // });
-
-    await interaction.reply(reply || 'No events scheduled');
+    await interaction.reply({ embeds });
   },
 };
