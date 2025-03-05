@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, InteractionContextType, ApplicationIntegrationType, GuildScheduledEventManager, time, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, InteractionContextType, ApplicationIntegrationType, GuildScheduledEventManager, time, channelMention, EmbedBuilder } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -15,16 +15,16 @@ module.exports = {
       return interaction.reply('No events scheduled');
     }
 
-    let reply = '';
     let embeds = [];
 
     events.forEach((event) => {
+      const location = event.entityType == 3 ? `-# <:pin:1343011687380553738>${event.entityMetadata.location}` : `-# ${channelMention(event.channelId)}`;
+
       embeds.push(
         new EmbedBuilder()
-          .setColor(0x00ff00)
           .setTitle(event.name)
           .setURL(event.url)
-          .setDescription(`${event.description}\n\n-# <:pin:1343011687380553738>${event.entityMetadata.location}\n${time(new Date(event.scheduledStartTimestamp), 'R')}`)
+          .setDescription(`${event.description}\n\n${location}\n-# ${time(new Date(event.scheduledStartTimestamp), 'R')}`)
           .setTimestamp(event.scheduledStartTimestamp)
       );
     });
