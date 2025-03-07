@@ -14,12 +14,17 @@ const fetchChannel = async (channel) => {
     messages = messages.concat(await channel.messages.fetch({ limit: 100, before: messages.last().id }));
   }
 
-  return {
-    id: channel.id,
-    name: channel.name,
-    viewable: channel.viewable,
-    messages: messages.map((message) => ({ id: message.id, timestamp: message.createdTimestamp, author: message.author.username, content: message.content })),
-  };
+  let messageArray = [];
+  for (const message of messages.values()) {
+    if (message.hasThread) {
+      const thread = await fetchChannel(message.thread);
+      messageArray.push({ id: message.id, timestamp: message.createdTimestamp, author: message.author.username, content: message.content, thread });
+    } else {
+      messageArray.push({ id: message.id, timestamp: message.createdTimestamp, author: message.author.username, content: message.content });
+    }
+  }
+
+  return { id: channel.id, name: channel.name, viewable: channel.viewable, messages: messageArray };
 };
 
 module.exports = {
