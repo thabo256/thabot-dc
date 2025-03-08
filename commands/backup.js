@@ -1,7 +1,7 @@
 const { Uint8ArrayWriter, TextReader, ZipWriter } = require('@zip.js/zip.js');
 require('dotenv').config();
 
-const { SlashCommandBuilder, MessageFlags, InteractionContextType, ApplicationIntegrationType, AttachmentBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags, InteractionContextType, ApplicationIntegrationType, AttachmentBuilder, MessageReferenceType } = require('discord.js');
 
 const fetchChannel = async (channel) => {
   if (!channel.viewable) {
@@ -16,12 +16,23 @@ const fetchChannel = async (channel) => {
 
   let messageArray = [];
   for (const message of messages.values()) {
-    if (message.hasThread) {
-      const thread = await fetchChannel(message.thread);
-      messageArray.push({ id: message.id, timestamp: message.createdTimestamp, author: message.author.username, content: message.content, thread });
-    } else {
-      messageArray.push({ id: message.id, timestamp: message.createdTimestamp, author: message.author.username, content: message.content });
+    const messageObject = { id: message.id, timestamp: message.createdTimestamp, author: message.author.username };
+
+    if (message.content) {
+      messageObject.content = message.content;
     }
+    if (message.reference) {
+      if (message.reference.type === MessageReferenceType.Default) {
+        messageObject.reference = message.reference.messageId;
+      } else if (message.reference.type === MessageReferenceType.Forward) {
+        messageObject.forwarded = message.reference.messageId;
+      }
+    }
+    if (message.hasThread) {
+      messageObject.thread = await fetchChannel(message.thread);
+    }
+
+    messageArray.push(messageObject);
   }
 
   return { id: channel.id, name: channel.name, viewable: channel.viewable, messages: messageArray };
