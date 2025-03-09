@@ -31,6 +31,12 @@ const fetchChannel = async (channel) => {
     if (message.hasThread) {
       messageObject.thread = await fetchChannel(message.thread);
     }
+    if (message.attachments.size > 0) {
+      messageObject.attachments = [];
+      for (const attachment of message.attachments.values()) {
+        messageObject.attachments.push(attachment.name);
+      }
+    }
 
     messageArray.push(messageObject);
   }
