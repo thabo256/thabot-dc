@@ -37,6 +37,14 @@ const fetchChannel = async (channel) => {
         messageObject.attachments.push(attachment.name);
       }
     }
+    if (message.embeds.length > 0) {
+      messageObject.embeds = [];
+      for (const embed of message.embeds.map((embed) => embed.toJSON())) {
+        if (embed.type === 'rich') {
+          messageObject.embeds.push(embed);
+        }
+      }
+    }
 
     messageArray.push(messageObject);
   }
