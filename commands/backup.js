@@ -7,8 +7,10 @@ const fetchChannel = async (channel) => {
   if (!channel.viewable) {
     return { id: channel.id, name: channel.name, viewable: channel.viewable };
   }
+  // fetch first 100 messages
   let messages = await channel.messages.fetch({ limit: 100 });
   let lastMessageId = undefined;
+  // fetch until you have all messages
   while (messages.last()?.id !== lastMessageId) {
     lastMessageId = messages.last()?.id;
     messages = messages.concat(await channel.messages.fetch({ limit: 100, before: messages.last().id }));
@@ -16,8 +18,10 @@ const fetchChannel = async (channel) => {
 
   let messageArray = [];
   for (const message of messages.values()) {
+    // create message object
     const messageObject = { id: message.id, timestamp: message.createdTimestamp, author: message.author.username };
 
+    // add optional fields
     if (message.content) {
       messageObject.content = message.content;
     }
@@ -71,6 +75,7 @@ module.exports = {
     const channels = await interaction.guild.channels.fetch();
     const backup = { id: interaction.guild.id, name: interaction.guild.name, channels: [{ textChannels: [], voiceChannels: [] }] };
 
+    // counter for progress
     const size = channels.filter((channel) => channel.isTextBased()).size;
     let i = 0;
     await interaction.editReply(`Creating backup...\n-# ${i}/${size}`);
@@ -79,13 +84,16 @@ module.exports = {
       if (!channel.isTextBased()) continue;
 
       if (channel.parent == undefined) {
+        // channels not in a category
         if (channel.isVoiceBased()) {
           backup.channels[0].voiceChannels[channel.position] = await fetchChannel(channel);
         } else {
           backup.channels[0].textChannels[channel.position] = await fetchChannel(channel);
         }
       } else {
+        // channels in a category
         if (backup.channels[channel.parent.position + 1] == undefined) {
+          // create category if it doesn't exist
           backup.channels[channel.parent.position + 1] = { id: channel.parent.id, name: channel.parent.name, textChannels: [], voiceChannels: [] };
         }
 
@@ -96,9 +104,11 @@ module.exports = {
         }
       }
 
+      // update progress
       await interaction.editReply(`Creating backup...\n-# ${++i}/${size}`);
     }
 
+    // get compression method from user input
     const compressionMethod = interaction.options.getString('compression');
 
     if (compressionMethod === 'none') {
@@ -107,6 +117,7 @@ module.exports = {
       return interaction.editReply({ content: 'download backup file:', files: [file] });
     }
 
+    // default to zip compression
     const writer = new ZipWriter(new Uint8ArrayWriter());
     await writer.add('backup.json', new TextReader(JSON.stringify(backup)), { level: 9 });
     const zipData = await writer.close();
