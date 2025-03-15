@@ -26,6 +26,7 @@ module.exports = {
           .setURL(event.url)
           .setDescription(`${event.description}\n\n${location}\n-# ${time(new Date(event.scheduledStartTimestamp), 'R')}`)
           .setTimestamp(event.scheduledStartTimestamp)
+          .setThumbnail(event.coverImageURL())
       );
     });
 
