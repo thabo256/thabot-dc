@@ -1,8 +1,12 @@
-const { ButtonStyle } = require('discord.js');
+const { ButtonStyle, MessageFlags } = require('discord.js');
 
 module.exports = {
   name: 'pacman',
   async execute(interaction, ids) {
+    if (interaction.message.mentions.users.first().id !== interaction.user.id) {
+      return interaction.reply({ content: 'you are not in the game\nuse `/pacman` to start a new game', flags: MessageFlags.Ephemeral });
+    }
+
     const content = interaction.message.content;
     const components = interaction.message.components;
     if (ids[1] === 'right') {

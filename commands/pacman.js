@@ -1,13 +1,16 @@
-const { SlashCommandBuilder, MessageFlags, InteractionContextType, ApplicationIntegrationType, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, InteractionContextType, ApplicationIntegrationType, userMention, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('pacman')
     .setDescription('play pacman')
+    .addUserOption((option) => option.setName('user').setDescription('player of pacman'))
     .setContexts([InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel])
     .setIntegrationTypes([ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall]),
   test: true,
   async execute(interaction) {
+    const user = interaction.options.getUser('user') ?? interaction.user;
+
     const components = [
       new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('pacman-0').setLabel('▪️').setStyle(ButtonStyle.Secondary).setDisabled(true),
@@ -26,14 +29,10 @@ module.exports = {
       ),
     ];
 
-    let board = '╭─────────────────────────╮ ╭─────────────────────────╮\n│ • • • • • • • • • • • • │ │ • • • • • • • • • • • • │\n│ • ╭─────╮ • ╭───────╮ • │ │ • ╭───────╮ • ╭─────╮ • │\n│ ● │     │ • │       │ • │ │ • │       │ • │     │ ● │\n│ • ╰─────╯ • ╰───────╯ • ╰─╯ • ╰───────╯ • ╰─────╯ • │\n│ • • • • • • • • • • • • • • • • • • • • • • • • • • │\n│ • ╭─────╮ • ╭─╮ • ╭─────────────╮ • ╭─╮ • ╭─────╮ • │\n│ • ╰─────╯ • │ │ • ╰─────╮ ╭─────╯ • │ │ • ╰─────╯ • │\n│ • • • • • • │ │ • • • • │ │ • • • • │ │ • • • • • • │\n╰─────────╮ • │ ╰─────╮   │ │   ╭─────╯ │ • ╭─────────╯\n          │ • │ ╭─────╯   ╰─╯   ╰─────╮ │ • │          \n          │ • │ │                     │ │ • │          \n          │ • │ │   ╔═════━━━═════╗   │ │ • │          \n──────────╯ • ╰─╯   ║             ║   ╰─╯ • ╰──────────\n            •       ║             ║       •            \n──────────╮ • ╭─╮   ║             ║   ╭─╮ • ╭──────────\n          │ • │ │   ╚═════════════╝   │ │ • │          \n          │ • │ │                     │ │ • │          \n          │ • │ │   ╭─────────────╮   │ │ • │          \n╭─────────╯ • ╰─╯   ╰─────╮ ╭─────╯   ╰─╯ • ╰─────────╮\n│ • • • • • • • • • • • • │ │ • • • • • • • • • • • • │\n│ • ╭─────╮ • ╭───────╮ • │ │ • ╭───────╮ • ╭─────╮ • │\n│ • ╰───╮ │ • ╰───────╯ • ╰─╯ • ╰───────╯ • │ ╭───╯ • │\n│ ● • • │ │ • • • • • • • ▐█▌ • • • • • • • │ │ • • ● │\n╰───╮ • │ │ • ╭─╮ • ╭─────────────╮ • ╭─╮ • │ │ • ╭───╯\n╭───╯ • ╰─╯ • │ │ • ╰─────╮ ╭─────╯ • │ │ • ╰─╯ • ╰───╮\n│ • • • • • • │ │ • • • • │ │ • • • • │ │ • • • • • • │\n│ • ╭─────────╯ ╰─────╮ • │ │ • ╭─────╯ ╰─────────╮ • │\n│ • ╰─────────────────╯ • ╰─╯ • ╰─────────────────╯ • │\n│ • • • • • • • • • • • • • • • • • • • • • • • • • • │\n╰─────────────────────────────────────────────────────╯';
+    let board =
+      '╭─────────────────────────╮ ╭─────────────────────────╮\n│ • • • • • • • • • • • • │ │ • • • • • • • • • • • • │\n│ • ╭─────╮ • ╭───────╮ • │ │ • ╭───────╮ • ╭─────╮ • │\n│ ● │     │ • │       │ • │ │ • │       │ • │     │ ● │\n│ • ╰─────╯ • ╰───────╯ • ╰─╯ • ╰───────╯ • ╰─────╯ • │\n│ • • • • • • • • • • • • • • • • • • • • • • • • • • │\n│ • ╭─────╮ • ╭─╮ • ╭─────────────╮ • ╭─╮ • ╭─────╮ • │\n│ • ╰─────╯ • │ │ • ╰─────╮ ╭─────╯ • │ │ • ╰─────╯ • │\n│ • • • • • • │ │ • • • • │ │ • • • • │ │ • • • • • • │\n╰─────────╮ • │ ╰─────╮   │ │   ╭─────╯ │ • ╭─────────╯\n          │ • │ ╭─────╯   ╰─╯   ╰─────╮ │ • │          \n          │ • │ │                     │ │ • │          \n          │ • │ │   ╔═════───═════╗   │ │ • │          \n──────────╯ • ╰─╯   ║             ║   ╰─╯ • ╰──────────\n            •       ║             ║       •            \n──────────╮ • ╭─╮   ║             ║   ╭─╮ • ╭──────────\n          │ • │ │   ╚═════════════╝   │ │ • │          \n          │ • │ │                     │ │ • │          \n          │ • │ │   ╭─────────────╮   │ │ • │          \n╭─────────╯ • ╰─╯   ╰─────╮ ╭─────╯   ╰─╯ • ╰─────────╮\n│ • • • • • • • • • • • • │ │ • • • • • • • • • • • • │\n│ • ╭─────╮ • ╭───────╮ • │ │ • ╭───────╮ • ╭─────╮ • │\n│ • ╰───╮ │ • ╰───────╯ • ╰─╯ • ╰───────╯ • │ ╭───╯ • │\n│ ● • • │ │ • • • • • • •     • • • • • • • │ │ • • ● │\n╰───╮ • │ │ • ╭─╮ • ╭─────────────╮ • ╭─╮ • │ │ • ╭───╯\n╭───╯ • ╰─╯ • │ │ • ╰─────╮ ╭─────╯ • │ │ • ╰─╯ • ╰───╮\n│ • • • • • • │ │ • • • • │ │ • • • • │ │ • • • • • • │\n│ • ╭─────────╯ ╰─────╮ • │ │ • ╭─────╯ ╰─────────╮ • │\n│ • ╰─────────────────╯ • ╰─╯ • ╰─────────────────╯ • │\n│ • • • • • • • • • • • • • • • • • • • • • • • • • • │\n╰─────────────────────────────────────────────────────╯';
 
-    await interaction.reply(`\`\`\`${board}\`\`\``);
-    await interaction.followUp({ components });
-
-    for (let i = 0; i < 20; i++) {
-      await interaction.editReply({ content: `\`\`\`${board = board.replace(/▐█▌./, ' ▐█▌')}\`\`\`` });
-      await new Promise(r => setTimeout(r, 500));
-    }
+    await interaction.reply(`${userMention(user.id)}'s game of pacman\n\`\`\`\n${board}\n\`\`\``);
+    await interaction.followUp({ content: userMention(user.id), components });
   },
 };
