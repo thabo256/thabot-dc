@@ -18,9 +18,9 @@ module.exports = {
         new ButtonBuilder().setCustomId('pacman-2').setLabel('▪️').setStyle(ButtonStyle.Secondary).setDisabled(true)
       ),
       new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId('pacman-left').setLabel('⬅️').setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId('pacman-left').setLabel('⬅️').setStyle(ButtonStyle.Success),
         new ButtonBuilder().setCustomId('pacman-4').setLabel('🔵').setStyle(ButtonStyle.Secondary).setDisabled(true),
-        new ButtonBuilder().setCustomId('pacman-right').setLabel('➡️').setStyle(ButtonStyle.Success)
+        new ButtonBuilder().setCustomId('pacman-right').setLabel('➡️').setStyle(ButtonStyle.Secondary)
       ),
       new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('pacman-6').setLabel('▪️').setStyle(ButtonStyle.Secondary).setDisabled(true),
@@ -30,12 +30,21 @@ module.exports = {
     ];
 
     const board = new PacmanBoard();
-    board.addPacman(27, 46);
+    const pacman = new PacmanCharacter(27, 46);
+    board.addCharacter(pacman);
 
     await interaction.reply(`${userMention(user.id)}'s game of pacman\n\`\`\`\n${board.toString()}\n\`\`\``);
     await interaction.followUp({ content: userMention(user.id), components });
   },
 };
+
+class PacmanCharacter {
+  constructor(x, y, direction) {
+    this.x = x;
+    this.y = y;
+    this.direction = direction ?? 'left';
+  }
+}
 
 class PacmanBoard {
   constructor() {
@@ -75,6 +84,27 @@ class PacmanBoard {
   }
 
   addPacman(x, y) {
+    if (y % 2 === 0) {
+      this.insert(y / 2, (x + 54) % 55, '▐');
+      this.insert(y / 2, x % 55, '█');
+      this.insert(y / 2, (x + 1) % 55, '▌');
+    } else {
+      this.insert((y - 1) / 2, (x + 54) % 55, '▗');
+      this.insert((y - 1) / 2, x % 55, '▄');
+      this.insert((y - 1) / 2, (x + 1) % 55, '▖');
+      this.insert((y + 1) / 2, (x + 54) % 55, '▝');
+      this.insert((y + 1) / 2, x % 55, '▀');
+      this.insert((y + 1) / 2, (x + 1) % 55, '▘');
+    }
+  }
+
+  addCharacter(character) {
+    if (!(character instanceof PacmanCharacter)) {
+      throw new TypeError('c must be a PacmanCharacter');
+    }
+    const x = character.x;
+    const y = character.y;
+
     if (y % 2 === 0) {
       this.insert(y / 2, (x + 54) % 55, '▐');
       this.insert(y / 2, x % 55, '█');
