@@ -17,14 +17,41 @@ module.exports = {
       new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('pacman-6').setLabel('▪️').setStyle(ButtonStyle.Secondary).setDisabled(true), new ButtonBuilder().setCustomId('pacman-down').setLabel('⬇️').setStyle(ButtonStyle.Secondary), new ButtonBuilder().setCustomId('pacman-8').setLabel('▪️').setStyle(ButtonStyle.Secondary).setDisabled(true)),
     ];
 
-    const board = new PacmanBoard();
     const pacman = new PacmanCharacter(27, 46);
-    board.addCharacter(pacman);
 
-    console.log(pacman.getDirections());
+    const startBoard = new PacmanBoard();
+    startBoard.addCharacter(pacman);
 
-    await interaction.reply(`${userMention(user.id)}'s game of pacman\n\`\`\`\n${board.toString()}\n\`\`\``);
-    await interaction.followUp({ content: userMention(user.id), components });
+    await interaction.reply(`${userMention(user.id)}'s game of pacman\n\`\`\`\n${startBoard.toString()}\n\`\`\``);
+    const controller = await interaction.followUp({ content: userMention(user.id), components });
+
+    for (let i = 0; i < 100; i++) {
+      controller.fetch().then((message) => {
+        const getDirection = (message) => {
+          if (message.components[0].components[1].data.style === 3) {
+            return 'up';
+          } else if (message.components[1].components[0].data.style === 3) {
+            return 'left';
+          } else if (message.components[1].components[2].data.style === 3) {
+            return 'right';
+          } else if (message.components[2].components[1].data.style === 3) {
+            return 'down';
+          }
+        };
+
+        const direction = getDirection(message);
+        if (pacman.getDirections().includes(direction)) {
+          pacman.direction = direction;
+        }
+      });
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      pacman.move();
+
+      const board = new PacmanBoard();
+      board.addCharacter(pacman);
+      await interaction.editReply(`${userMention(user.id)}'s game of pacman\n\`\`\`\n${board.toString()}\n\`\`\``);
+    }
   },
 };
 
@@ -36,6 +63,10 @@ class PacmanCharacter {
   }
 
   move() {
+    const directions = this.getDirections();
+    if (!directions.includes(this.direction)) {
+      return;
+    }
     switch (this.direction) {
       case 'up':
         this.y -= 1;
