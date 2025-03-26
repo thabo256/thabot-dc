@@ -24,26 +24,32 @@ module.exports = {
 
     await interaction.reply(`${userMention(user.id)}'s game of pacman\n\`\`\`\n${startBoard.toString()}\n\`\`\``);
     const controller = await interaction.followUp({ content: userMention(user.id), components });
+    let joystick = 'left';
 
-    for (let i = 0; i < 100; i++) {
+    let running = true;
+
+    const fetchController = () => {
       controller.fetch().then((message) => {
-        const getDirection = (message) => {
-          if (message.components[0].components[1].data.style === 3) {
-            return 'up';
-          } else if (message.components[1].components[0].data.style === 3) {
-            return 'left';
-          } else if (message.components[1].components[2].data.style === 3) {
-            return 'right';
-          } else if (message.components[2].components[1].data.style === 3) {
-            return 'down';
-          }
-        };
-
-        const direction = getDirection(message);
-        if (pacman.getDirections().includes(direction)) {
-          pacman.direction = direction;
+        if (message.components[0].components[1].data.style === 3) {
+          joystick = 'up';
+        } else if (message.components[1].components[0].data.style === 3) {
+          joystick = 'left';
+        } else if (message.components[1].components[2].data.style === 3) {
+          joystick = 'right';
+        } else if (message.components[2].components[1].data.style === 3) {
+          joystick = 'down';
+        }
+        if (running) {
+          fetchController();
         }
       });
+    };
+    fetchController();
+
+    for (let i = 0; i < 100; i++) {
+      if (pacman.getDirections().includes(joystick)) {
+        pacman.direction = joystick;
+      }
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       pacman.move();
@@ -52,6 +58,8 @@ module.exports = {
       board.addCharacter(pacman);
       await interaction.editReply(`${userMention(user.id)}'s game of pacman\n\`\`\`\n${board.toString()}\n\`\`\``);
     }
+
+    running = false;
   },
 };
 
@@ -69,16 +77,16 @@ class PacmanCharacter {
     }
     switch (this.direction) {
       case 'up':
-        this.y -= 1;
+        this.y = (this.y + 60) % 61;
         break;
       case 'down':
-        this.y += 1;
+        this.y = (this.y + 1) % 61;
         break;
       case 'left':
-        this.x -= 1;
+        this.x = (this.x + 54) % 55;
         break;
       case 'right':
-        this.x += 1;
+        this.x = (this.x + 1) % 55;
         break;
     }
   }
@@ -112,7 +120,7 @@ class PacmanCharacter {
       26: { 12: 5, 18: 5, 36: 5, 42: 5 },
       27: { 12: 5, 18: 5, 36: 5, 42: 5 },
       28: { 0: 10, 1: 10, 2: 10, 3: 10, 4: 10, 5: 10, 6: 10, 7: 10, 8: 10, 9: 10, 10: 10, 11: 10, 12: 15, 13: 10, 14: 10, 15: 10, 16: 10, 17: 10, 18: 7, 36: 13, 37: 10, 38: 10, 39: 10, 40: 10, 41: 10, 42: 15, 43: 10, 44: 10, 45: 10, 46: 10, 47: 10, 48: 10, 49: 10, 50: 10, 51: 10, 52: 10, 53: 10, 54: 10 },
-      19: { 12: 5, 18: 5, 36: 5, 42: 5 },
+      29: { 12: 5, 18: 5, 36: 5, 42: 5 },
       30: { 12: 5, 18: 5, 36: 5, 42: 5 },
       31: { 12: 5, 18: 5, 36: 5, 42: 5 },
       32: { 12: 5, 18: 5, 36: 5, 42: 5 },
@@ -123,7 +131,7 @@ class PacmanCharacter {
       37: { 12: 5, 18: 5, 36: 5, 42: 5 },
       38: { 12: 5, 18: 5, 36: 5, 42: 5 },
       39: { 12: 5, 18: 5, 36: 5, 42: 5 },
-      40: { 2: 12, 3: 10, 4: 10, 5: 10, 6: 10, 7: 10, 8: 10, 9: 10, 10: 10, 11: 10, 12: 14, 13: 10, 14: 10, 15: 10, 16: 10, 17: 10, 18: 10, 19: 10, 20: 10, 21: 10, 22: 10, 23: 10, 24: 6, 30: 12, 31: 10, 32: 10, 33: 10, 34: 10, 35: 10, 36: 10, 37: 10, 38: 10, 39: 10, 40: 10, 41: 10, 42: 14, 43: 10, 44: 10, 45: 10, 46: 10, 47: 10, 48: 10, 49: 10, 50: 10, 51: 10, 52: 6 },
+      40: { 2: 12, 3: 10, 4: 10, 5: 10, 6: 10, 7: 10, 8: 10, 9: 10, 10: 10, 11: 10, 12: 15, 13: 10, 14: 10, 15: 10, 16: 10, 17: 10, 18: 11, 19: 10, 20: 10, 21: 10, 22: 10, 23: 10, 24: 6, 30: 12, 31: 10, 32: 10, 33: 10, 34: 10, 35: 10, 36: 11, 37: 10, 38: 10, 39: 10, 40: 10, 41: 10, 42: 15, 43: 10, 44: 10, 45: 10, 46: 10, 47: 10, 48: 10, 49: 10, 50: 10, 51: 10, 52: 6 },
       41: { 2: 5, 12: 5, 24: 5, 30: 5, 42: 5, 52: 5 },
       42: { 2: 5, 12: 5, 24: 5, 30: 5, 42: 5, 52: 5 },
       43: { 2: 5, 12: 5, 24: 5, 30: 5, 42: 5, 52: 5 },
