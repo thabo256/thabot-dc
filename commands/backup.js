@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const { SlashCommandBuilder, MessageFlags, InteractionContextType, ApplicationIntegrationType, AttachmentBuilder, MessageReferenceType } = require('discord.js');
 
-const fetchChannel = async (channel) => {
+const fetchChannel = async (channel, includeReactions) => {
   if (!channel.viewable) {
     return { id: channel.id, name: channel.name, viewable: channel.viewable };
   }
@@ -33,7 +33,7 @@ const fetchChannel = async (channel) => {
       }
     }
     if (message.hasThread) {
-      messageObject.thread = await fetchChannel(message.thread);
+      messageObject.thread = await fetchChannel(message.thread, includeReactions);
     }
     if (message.attachments.size > 0) {
       messageObject.attachments = [];
@@ -49,6 +49,15 @@ const fetchChannel = async (channel) => {
         }
       }
     }
+    if (includeReactions) {
+      if (message.reactions.cache.size > 0) {
+        messageObject.reactions = [];
+        for (const reaction of message.reactions.cache.values()) {
+          const users = (await reaction.users.fetch().catch(console.error)) ?? reaction.users.cache;
+          messageObject.reactions.push({ emoji: reaction.emoji.toString(), users: [...users.values()].map((user) => user.username) });
+        }
+      }
+    }
 
     messageArray.push(messageObject);
   }
@@ -61,6 +70,7 @@ module.exports = {
     .setName('backup')
     .setDescription('backup this server')
     .addStringOption((option) => option.setName('compression').setDescription('compression method').addChoices({ name: 'zip', value: 'zip' }, { name: 'none', value: 'none' }))
+    .addBooleanOption((option) => option.setName('include-reactions').setDescription('include reactions in backup; this will take way longer'))
     .setContexts([InteractionContextType.Guild])
     .setIntegrationTypes([ApplicationIntegrationType.GuildInstall]),
   test: true,
@@ -69,6 +79,8 @@ module.exports = {
     if (interaction.user.id !== process.env.DEVELOPER_ID) {
       return interaction.reply({ content: 'You do not have permission to use this command.', flags: MessageFlags.Ephemeral });
     }
+
+    const includeReactions = interaction.options.getBoolean('include-reactions') ?? false;
 
     await interaction.reply('Creating backup...');
 
@@ -86,9 +98,9 @@ module.exports = {
       if (channel.parent == undefined) {
         // channels not in a category
         if (channel.isVoiceBased()) {
-          backup.channels[0].voiceChannels[channel.position] = await fetchChannel(channel);
+          backup.channels[0].voiceChannels[channel.position] = await fetchChannel(channel, includeReactions);
         } else {
-          backup.channels[0].textChannels[channel.position] = await fetchChannel(channel);
+          backup.channels[0].textChannels[channel.position] = await fetchChannel(channel, includeReactions);
         }
       } else {
         // channels in a category
@@ -98,9 +110,9 @@ module.exports = {
         }
 
         if (channel.isVoiceBased()) {
-          backup.channels[channel.parent.position + 1].voiceChannels[channel.position] = await fetchChannel(channel);
+          backup.channels[channel.parent.position + 1].voiceChannels[channel.position] = await fetchChannel(channel, includeReactions);
         } else {
-          backup.channels[channel.parent.position + 1].textChannels[channel.position] = await fetchChannel(channel);
+          backup.channels[channel.parent.position + 1].textChannels[channel.position] = await fetchChannel(channel, includeReactions);
         }
       }
 
