@@ -49,6 +49,17 @@ const fetchChannel = async (channel, includeReactions) => {
         }
       }
     }
+    if (message.poll) {
+      const poll = message.poll.toJSON();
+      for (const a of message.poll.answers.values()) {
+        const answer = a.toJSON();
+        if (a.emoji) answer.emoji = a.emoji.toString();
+        const voters = await a.fetchVoters();
+        answer.voters = voters.map((user) => user.username);
+        poll.answers[a.id - 1] = answer;
+      }
+      messageObject.poll = poll;
+    }
     if (includeReactions) {
       if (message.reactions.cache.size > 0) {
         messageObject.reactions = [];
