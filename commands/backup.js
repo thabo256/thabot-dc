@@ -60,6 +60,9 @@ const fetchChannel = async (channel, includeReactions) => {
       }
       messageObject.poll = poll;
     }
+    if (message.pinned) {
+      messageObject.pinned = message.pinned;
+    }
     if (includeReactions) {
       if (message.reactions.cache.size > 0) {
         messageObject.reactions = [];
