@@ -63,6 +63,10 @@ const fetchChannel = async (channel, includeReactions) => {
     if (message.pinned) {
       messageObject.pinned = message.pinned;
     }
+    if (message.interaction) {
+      // deprecated but interactionMetadata doesn't provide comandName
+      messageObject.interaction = message.interaction.commandName;
+    }
     if (includeReactions) {
       if (message.reactions.cache.size > 0) {
         messageObject.reactions = [];
