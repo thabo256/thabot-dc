@@ -18,8 +18,10 @@ module.exports = {
 
     await interaction.reply('...');
 
+    // use custom characters or fallback to default
     const chars = customChars ? customChars.split('') : ['╱', '╲'];
 
+    // if includeX is true, add ╳ to the characters
     if (includeX && !customChars) {
       chars.push('╳');
     }
@@ -28,9 +30,11 @@ module.exports = {
 
     for (let i = 0; i < height; i++) {
       for (let j = 0; j < width; j++) {
+        // add a random character from the chars array
         output += chars[Math.floor(Math.random() * chars.length)];
       }
       output += '\n';
+      // edit after each line
       await interaction.editReply(`\`\`\`${output}\`\`\``);
     }
   },
