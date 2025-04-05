@@ -12,8 +12,9 @@ module.exports = {
   async execute(interaction) {
     if (interaction.options.getSubcommand() === 'servers') {
       const guilds = await interaction.client.guilds.fetch();
-      const response = guilds.map((guild) => `**${guild.name}** (\`${guild.id}\`)`).join('\n');
-      return interaction.reply({ content: `The bot is in the following servers:\n${response}`, flags: MessageFlags.Ephemeral });
+      const response = guilds.map((guild) => `- **${guild.name}** (\`${guild.id}\`)`).join('\n');
+      const app = await interaction.client.application.fetch();
+      return interaction.reply({ content: `The bot is in approximately \`${app.approximateGuildCount}\` servers:\n${response}`, flags: MessageFlags.Ephemeral });
     }
     if (interaction.options.getSubcommand() === 'users') {
       const app = await interaction.client.application.fetch();
