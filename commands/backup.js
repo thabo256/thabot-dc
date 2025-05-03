@@ -103,7 +103,7 @@ module.exports = {
     await interaction.reply('Creating backup...');
 
     const channels = await interaction.guild.channels.fetch();
-    const backup = { id: interaction.guild.id, name: interaction.guild.name, channels: [{ textChannels: [], voiceChannels: [] }] };
+    const backup = { id: interaction.guild.id, name: interaction.guild.name, backup: { time: new Date().toISOString(), timestamp: Date.now() }, channels: [{ textChannels: [], voiceChannels: [] }] };
 
     // counter for progress
     const size = channels.filter((channel) => channel.isTextBased()).size;
