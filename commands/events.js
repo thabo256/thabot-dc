@@ -11,7 +11,7 @@ module.exports = {
 
     const events = await eventManager.fetch();
 
-    if (events.length == 0) {
+    if (events.size == 0) {
       return interaction.reply('No events scheduled');
     }
 
