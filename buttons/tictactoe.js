@@ -51,15 +51,13 @@ module.exports = {
 
       // send rematch request
       return interaction.update({ content, components });
-
-
     } else if (ids[1] === 'accept') {
       if (ids[2] !== interaction.user.id) return interaction.deferUpdate();
       const content = interaction.message.content;
       const components = interaction.message.components;
       components.pop();
       await interaction.update({ components });
-      
+
       // get players
       const regex = /<@!?(\d+?)>`(.+?)`/g;
       const players = [regex.exec(content), regex.exec(content)];
@@ -90,11 +88,9 @@ module.exports = {
           new ButtonBuilder().setCustomId('tictactoe-2-2').setLabel('-').setStyle(ButtonStyle.Secondary)
         ),
       ];
-      
+
       // send new bord
       return interaction.followUp({ content: `${userMention(players[0][1])}\`${players[0][2]}\` **vs** ${userMention(players[1][1])}\`${players[1][2]}\`\n\n${line2}`, components: board });
-
-
     } else {
       // not a player
       if (!interaction.message.mentions.users.has(interaction.user.id)) {

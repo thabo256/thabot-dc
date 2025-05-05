@@ -43,7 +43,7 @@ const fetchChannel = async (channel, includeReactions) => {
     }
     if (message.embeds.length > 0) {
       messageObject.embeds = [];
-      for (const embed of message.embeds.map((embed) => embed.toJSON())) {
+      for (const embed of message.embeds.map(embed => embed.toJSON())) {
         if (embed.type === 'rich') {
           messageObject.embeds.push(embed);
         }
@@ -55,7 +55,7 @@ const fetchChannel = async (channel, includeReactions) => {
         const answer = a.toJSON();
         if (a.emoji) answer.emoji = a.emoji.toString();
         const voters = await a.fetchVoters();
-        answer.voters = voters.map((user) => user.username);
+        answer.voters = voters.map(user => user.username);
         poll.answers[a.id - 1] = answer;
       }
       messageObject.poll = poll;
@@ -72,7 +72,7 @@ const fetchChannel = async (channel, includeReactions) => {
         messageObject.reactions = [];
         for (const reaction of message.reactions.cache.values()) {
           const users = (await reaction.users.fetch().catch(console.error)) ?? reaction.users.cache;
-          messageObject.reactions.push({ emoji: reaction.emoji.toString(), users: [...users.values()].map((user) => user.username) });
+          messageObject.reactions.push({ emoji: reaction.emoji.toString(), users: [...users.values()].map(user => user.username) });
         }
       }
     }
@@ -87,8 +87,8 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('backup')
     .setDescription('backup this server')
-    .addStringOption((option) => option.setName('compression').setDescription('compression method').addChoices({ name: 'zip', value: 'zip' }, { name: 'none', value: 'none' }))
-    .addBooleanOption((option) => option.setName('include-reactions').setDescription('include reactions in backup; this will take way longer'))
+    .addStringOption(option => option.setName('compression').setDescription('compression method').addChoices({ name: 'zip', value: 'zip' }, { name: 'none', value: 'none' }))
+    .addBooleanOption(option => option.setName('include-reactions').setDescription('include reactions in backup; this will take way longer'))
     .setContexts([InteractionContextType.Guild])
     .setIntegrationTypes([ApplicationIntegrationType.GuildInstall]),
   test: true,
@@ -106,7 +106,7 @@ module.exports = {
     const backup = { id: interaction.guild.id, name: interaction.guild.name, backup: { time: new Date().toISOString(), timestamp: Date.now() }, channels: [{ textChannels: [], voiceChannels: [] }] };
 
     // counter for progress
-    const size = channels.filter((channel) => channel.isTextBased()).size;
+    const size = channels.filter(channel => channel.isTextBased()).size;
     let i = 0;
     await interaction.editReply(`Creating backup...\n-# ${i}/${size}`);
 

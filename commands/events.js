@@ -17,7 +17,7 @@ module.exports = {
 
     let embeds = [];
 
-    events.forEach((event) => {
+    events.forEach(event => {
       const location = event.entityType == 3 ? `-# <:pin:1343011687380553738>${event.entityMetadata.location}` : `-# ${channelMention(event.channelId)}`;
 
       embeds.push(

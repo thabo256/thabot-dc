@@ -4,7 +4,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('pacman')
     .setDescription('play pacman')
-    .addUserOption((option) => option.setName('user').setDescription('player of pacman'))
+    .addUserOption(option => option.setName('user').setDescription('player of pacman'))
     .setContexts([InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel])
     .setIntegrationTypes([ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall]),
   test: true,
@@ -29,7 +29,7 @@ module.exports = {
     let running = true;
 
     const fetchController = () => {
-      controller.fetch().then((message) => {
+      controller.fetch().then(message => {
         if (message.components[0].components[1].data.style === 3) {
           joystick = 'up';
         } else if (message.components[1].components[0].data.style === 3) {
@@ -50,7 +50,7 @@ module.exports = {
       if (pacman.getDirections().includes(joystick)) {
         pacman.direction = joystick;
       }
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       pacman.move();
 

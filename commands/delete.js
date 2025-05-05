@@ -4,7 +4,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('delete')
     .setDescription('deletes last sent messages in channel')
-    .addNumberOption((option) => option.setName('count').setDescription('number of messages to delete').setMinValue(1).setMaxValue(100))
+    .addNumberOption(option => option.setName('count').setDescription('number of messages to delete').setMinValue(1).setMaxValue(100))
     .setContexts(InteractionContextType.Guild)
     .setIntegrationTypes([ApplicationIntegrationType.GuildInstall]),
   test: true,
@@ -18,7 +18,7 @@ module.exports = {
 
     await interaction.channel.messages
       .fetch({ limit: count })
-      .then((messages) => {
+      .then(messages => {
         interaction.channel.bulkDelete(messages);
       })
       .catch(console.error);

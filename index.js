@@ -22,7 +22,7 @@ const client = new Client({
 // dynamically retrieve command files
 client.commands = new Collection();
 const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
   const filePath = path.join(commandsPath, file);
@@ -33,7 +33,7 @@ for (const file of commandFiles) {
 // dynamically retrieve button files
 client.buttons = new Collection();
 const buttonsPath = path.join(__dirname, 'buttons');
-const buttonFiles = fs.readdirSync(buttonsPath).filter((file) => file.endsWith('.js'));
+const buttonFiles = fs.readdirSync(buttonsPath).filter(file => file.endsWith('.js'));
 
 for (const file of buttonFiles) {
   const filePath = path.join(buttonsPath, file);
@@ -43,7 +43,7 @@ for (const file of buttonFiles) {
 
 // dynamically retrieve event files
 const eventsPath = path.join(__dirname, 'events');
-const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
   const filePath = path.join(eventsPath, file);

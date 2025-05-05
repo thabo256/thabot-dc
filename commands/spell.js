@@ -47,14 +47,14 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('spell')
     .setDescription('spell out text using reactions')
-    .addStringOption((option) => option.setName('text').setDescription('text to spell').setRequired(true).setMaxLength(20))
+    .addStringOption(option => option.setName('text').setDescription('text to spell').setRequired(true).setMaxLength(20))
     .setContexts([InteractionContextType.Guild, InteractionContextType.BotDM])
     .setIntegrationTypes([ApplicationIntegrationType.GuildInstall]),
   async execute(interaction) {
     const text = interaction.options.getString('text');
     if (/(.).*\1/.test(text)) return interaction.reply({ content: `${text} has repeated characters`, flags: MessageFlags.Ephemeral });
     await interaction.reply({ content: `spelling out ${text} with reactions`, flags: MessageFlags.Ephemeral });
-    await interaction.channel.send('** **').then(async (message) => {
+    await interaction.channel.send('** **').then(async message => {
       for (const char of text.toLowerCase()) {
         const emoji = emojis[char];
         if (emoji) {

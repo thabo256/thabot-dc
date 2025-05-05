@@ -4,7 +4,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('copyevent')
     .setDescription('copy an event from another server')
-    .addStringOption((option) => option.setName('id').setDescription('event id').setRequired(true))
+    .addStringOption(option => option.setName('id').setDescription('event id').setRequired(true))
     .setContexts(InteractionContextType.Guild)
     .setIntegrationTypes(ApplicationIntegrationType.GuildInstall),
   async execute(interaction) {

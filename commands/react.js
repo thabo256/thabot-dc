@@ -47,7 +47,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('react')
     .setDescription('react to latest message')
-    .addStringOption((option) => option.setName('text').setDescription('text to react').setRequired(true).setMaxLength(20))
+    .addStringOption(option => option.setName('text').setDescription('text to react').setRequired(true).setMaxLength(20))
     .setContexts([InteractionContextType.Guild, InteractionContextType.BotDM])
     .setIntegrationTypes([ApplicationIntegrationType.GuildInstall]),
   async execute(interaction) {

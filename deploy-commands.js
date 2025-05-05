@@ -7,7 +7,7 @@ const { REST, Routes } = require('discord.js');
 const testcommands = [];
 const commands = [];
 const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
   const filePath = path.join(commandsPath, file);
@@ -27,10 +27,10 @@ const rest = new REST().setToken(process.env.LOGIN_TOKEN);
 
 rest
   .put(Routes.applicationGuildCommands(process.env.APPLICATION_ID, process.env.TESTSERVER_ID), { body: testcommands })
-  .then((data) => console.log(`Successfully registered ${data.length} application test commands.`))
+  .then(data => console.log(`Successfully registered ${data.length} application test commands.`))
   .catch(console.error);
 
 rest
   .put(Routes.applicationCommands(process.env.APPLICATION_ID), { body: commands })
-  .then((data) => console.log(`Successfully registered ${data.length} application commands.`))
+  .then(data => console.log(`Successfully registered ${data.length} application commands.`))
   .catch(console.error);

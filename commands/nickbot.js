@@ -4,7 +4,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('nickbot')
     .setDescription('set nickname of bot')
-    .addStringOption((option) => option.setName('name').setDescription('new nickname for bot)').setRequired(true).setMaxLength(32))
+    .addStringOption(option => option.setName('name').setDescription('new nickname for bot)').setRequired(true).setMaxLength(32))
     .setContexts(InteractionContextType.Guild)
     .setIntegrationTypes([ApplicationIntegrationType.GuildInstall]),
   async execute(interaction) {

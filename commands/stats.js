@@ -4,7 +4,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('stats')
     .setDescription('Display a user stats')
-    .addUserOption((option) => option.setName('user').setDescription('user to get stats from'))
+    .addUserOption(option => option.setName('user').setDescription('user to get stats from'))
     .setContexts([InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel])
     .setIntegrationTypes([ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall]),
   async execute(interaction) {
