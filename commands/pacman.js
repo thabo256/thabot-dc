@@ -42,11 +42,16 @@ module.exports = {
         if (running) {
           fetchController();
         }
+      }).catch(error => {
+        console.error('[pacman] Error while fetching controller:', error);
+        running = false;
+        interaction.followUp({ content: 'An error occurred while fetching the controller.', ephemeral: true });
       });
     };
     fetchController();
 
     for (let i = 0; i < 100; i++) {
+      if (!running) break;
       if (pacman.getDirections().includes(joystick)) {
         pacman.direction = joystick;
       }
@@ -56,7 +61,11 @@ module.exports = {
 
       const board = new PacmanBoard();
       board.addCharacter(pacman);
-      await interaction.editReply(`${userMention(user.id)}'s game of pacman\n\`\`\`\n${board.toString()}\n\`\`\``);
+      await interaction.editReply(`${userMention(user.id)}'s game of pacman\n\`\`\`\n${board.toString()}\n\`\`\``).catch(error => {
+        console.error('[pacman] Error while updating game board:', error);
+        running = false;
+        interaction.followUp({ content: 'An error occurred while updating the game board.', ephemeral: true });
+      });
     }
 
     running = false;
