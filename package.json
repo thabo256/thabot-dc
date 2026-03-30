@@ -10,8 +10,8 @@
   "author": "thabo",
   "license": "Apache-2.0",
   "dependencies": {
-    "@zip.js/zip.js": "^2.7.72",
-    "discord.js": "^14.21.0",
-    "dotenv": "^16.6.1"
+    "@zip.js/zip.js": "^2.8.23",
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.3.1"
   }
 }
