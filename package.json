@@ -8,7 +8,7 @@
     "deploy-commands": "node deploy-commands.js"
   },
   "author": "thabo",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "@zip.js/zip.js": "^2.7.72",
     "discord.js": "^14.21.0",
