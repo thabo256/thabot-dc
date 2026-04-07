@@ -7,7 +7,10 @@ module.exports = {
       // Dynamically executing commands
       const command = interaction.client.commands.get(interaction.commandName);
 
-      if (!command) return;
+      if (!command) {
+        console.error(`Command ${interaction.commandName} not found.`);
+        return;
+      }
 
       try {
         await command.execute(interaction);
@@ -38,13 +41,32 @@ module.exports = {
       const ids = interaction.customId.split('-');
       const button = interaction.client.buttons.get(ids[0]);
 
-      if (!button) return;
+      if (!button) {
+        console.error(`Button ${ids[0]} not found.`);
+        return;
+      }
 
       try {
         await button.execute(interaction, ids);
       } catch (error) {
         console.error(error);
         await interaction.reply({ content: 'There was an error while handling this button press!', flags: MessageFlags.Ephemeral }).catch(console.error);
+      }
+    } else if (interaction.isStringSelectMenu()) {
+      // Dynamically executing select menus
+      const ids = interaction.customId.split('-');
+      const selectMenu = interaction.client.selectMenus.get(ids[0]);
+
+      if (!selectMenu) {
+        console.error(`Select Menu ${ids[0]} not found.`);
+        return;
+      }
+
+      try {
+        await selectMenu.execute(interaction, ids);
+      } catch (error) {
+        console.error(error);
+        await interaction.reply({ content: 'There was an error while handling this select menu!', flags: MessageFlags.Ephemeral }).catch(console.error);
       }
     }
   },

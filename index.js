@@ -41,6 +41,17 @@ for (const file of buttonFiles) {
   client.buttons.set(button.name, button);
 }
 
+// dynamically retrieve select menu files
+client.selectMenus = new Collection();
+const selectMenusPath = path.join(__dirname, 'selectMenus');
+const selectMenusFiles = fs.readdirSync(selectMenusPath).filter(file => file.endsWith('.js'));
+
+for (const file of selectMenusFiles) {
+  const filePath = path.join(selectMenusPath, file);
+  const selectMenu = require(filePath);
+  client.selectMenus.set(selectMenu.name, selectMenu);
+}
+
 // dynamically retrieve event files
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
