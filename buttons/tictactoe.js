@@ -28,7 +28,7 @@ module.exports = {
         ),
       ];
 
-      // send bord
+      // send board
       return interaction.update({ content: `${userMention(user.id)}\`X\` **vs** ${userMention(interaction.user.id)}\`O\`\n\nanyone click to start`, components: board });
 
       
@@ -89,7 +89,7 @@ module.exports = {
         ),
       ];
 
-      // send new bord
+      // send new board
       return interaction.followUp({ content: `${userMention(players[0][1])}\`${players[0][2]}\` **vs** ${userMention(players[1][1])}\`${players[1][2]}\`\n\n${line2}`, components: board });
     } else {
       // not a player
