@@ -68,6 +68,22 @@ module.exports = {
         console.error(error);
         await interaction.reply({ content: 'There was an error while handling this select menu!', flags: MessageFlags.Ephemeral }).catch(console.error);
       }
+    } else if (interaction.isModalSubmit()) {
+      // Dynamically executing modals
+      const ids = interaction.customId.split('-');
+      const modal = interaction.client.modals.get(ids[0]);
+
+      if (!modal) {
+        console.error(`Modal ${ids[0]} not found.`);
+        return;
+      }
+
+      try {
+        await modal.execute(interaction, ids);
+      } catch (error) {
+        console.error(error);
+        await interaction.reply({ content: 'There was an error while handling this modal!', flags: MessageFlags.Ephemeral }).catch(console.error);
+      }
     }
   },
 };

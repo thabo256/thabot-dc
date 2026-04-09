@@ -52,6 +52,17 @@ for (const file of selectMenusFiles) {
   client.selectMenus.set(selectMenu.name, selectMenu);
 }
 
+// dynamically retrieve modal files
+client.modals = new Collection();
+const modalsPath = path.join(__dirname, 'modals');
+const modalsFiles = fs.readdirSync(modalsPath).filter(file => file.endsWith('.js'));
+
+for (const file of modalsFiles) {
+  const filePath = path.join(modalsPath, file);
+  const modal = require(filePath);
+  client.modals.set(modal.name, modal);
+}
+
 // dynamically retrieve event files
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));

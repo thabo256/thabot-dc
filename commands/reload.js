@@ -13,7 +13,8 @@ module.exports = {
         // value of the choices must match the folder name
         { name: 'command', value: 'commands' },
         { name: 'button', value: 'buttons' },
-        { name: 'select menu', value: 'selectMenus' }
+        { name: 'select menu', value: 'selectMenus' },
+        { name: 'modal', value: 'modals' },
       )
     )
     .addStringOption(option => option.setName('file').setDescription('the file to reload').setRequired(true).setAutocomplete(true))
@@ -83,6 +84,10 @@ module.exports = {
         // replace select menu in collection
         interaction.client.selectMenus.set(newFile.name, newFile);
         await interaction.reply({ content: `Select Menu \`${newFile.name}\` was reloaded!`, flags: MessageFlags.Ephemeral });
+      } else if (type === 'modals') {
+        // replace modal in collection
+        interaction.client.modals.set(newFile.name, newFile);
+        await interaction.reply({ content: `Modal \`${newFile.name}\` was reloaded!`, flags: MessageFlags.Ephemeral });
       }
     } catch (error) {
       console.error(error);
