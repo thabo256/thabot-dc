@@ -49,6 +49,9 @@ module.exports = {
             new StringSelectMenuOptionBuilder().setLabel('-').setValue('6').setEmoji('7️⃣'),
           ),
       ),
+      new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId('connect4-color').setLabel('change color').setStyle(ButtonStyle.Secondary),
+      ),
     ];
 
     if (opponent) {
