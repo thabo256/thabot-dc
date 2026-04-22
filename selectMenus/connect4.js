@@ -192,7 +192,7 @@ module.exports = {
           board[spot[0]][spot[1]] = square;
         }
         const heading = `${userMention(players[0][1])}${players[0][2]} **vs** ${userMention(players[1][1])}${players[1][2]} \n\n${userMention(winner)} won\n\n`;
-        components = [];
+        components.splice(0);
         return interaction.update({ content: heading + printBoard(board), components });
       }
 
