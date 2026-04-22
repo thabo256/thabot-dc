@@ -54,7 +54,7 @@ const fetchChannel = async (channel, includeReactions) => {
       for (const a of message.poll.answers.values()) {
         const answer = a.toJSON();
         if (a.emoji) answer.emoji = a.emoji.toString();
-        const voters = await a.fetchVoters();
+        const voters = await a.voters.fetch();
         answer.voters = voters.map(user => user.username);
         poll.answers[a.id - 1] = answer;
       }
@@ -91,7 +91,6 @@ module.exports = {
     .addBooleanOption(option => option.setName('include-reactions').setDescription('include reactions in backup; this will take way longer'))
     .setContexts([InteractionContextType.Guild])
     .setIntegrationTypes([ApplicationIntegrationType.GuildInstall]),
-  test: true,
   async execute(interaction) {
     // check for permission
     if (interaction.user.id !== process.env.DEVELOPER_ID) {
